@@ -1,0 +1,19 @@
+{
+  "id": "comfyui",
+  "name": "ComfyUI",
+  "description": "The most powerful and modular stable diffusion GUI with a graph/nodes interface.",
+  "github_url": "https://github.com/comfyanonymous/ComfyUI",
+  "category": "Image AI",
+  "tags": ["stable-diffusion", "image-generation", "nodes", "workflows"],
+  "stack": "python",
+  "install_time_minutes": 5,
+  "disk_gb": 3,
+  "requires_gpu": true,
+  "env_vars": [],
+  "screenshot_url": "https://raw.githubusercontent.com/comfyanonymous/ComfyUI/master/comfyui_screenshot.png",
+  "downloads": 48200,
+  "stars": 52000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "added_at": "2026-01-01"
+}

@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.npm
+
+# Build outputs
+dist/
+build/
+src-tauri/target/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# AppDrop runtime data (user installs)
+~/.appdrop/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+.pytest_cache/
+htmlcov/
+
+# Tauri
+src-tauri/target/
