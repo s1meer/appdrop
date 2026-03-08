@@ -41,6 +41,7 @@
       "fullscreen": false,
       "resizable": true,
       "title": "AppDrop",
+      "fileDropEnabled": false,
       "width": 1100,
       "height": 720,
       "minWidth": 800,

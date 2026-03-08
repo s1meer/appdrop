@@ -29,8 +29,9 @@ export default function Sidebar({ page, setPage, apps, theme }: Props) {
       display:"flex",flexDirection:"column",flexShrink:0,height:"100vh"}}>
       {/* Logo */}
       <div style={{padding:"24px 20px 16px",borderBottom:`1px solid ${theme==="dark"?"#1A1D2E":"#D8DCF0"}`}}>
-        <div style={{fontSize:22,fontWeight:900,color:text,letterSpacing:-1}}>
-          AppDrop <span style={{color:"#4F8EF7"}}>▼</span>
+        <div style={{fontSize:22,fontWeight:900,color:text,letterSpacing:-1,display:"flex",alignItems:"center",gap:8}}>
+          <img src="/src-tauri/icons/icon.png" width="28" height="28" style={{borderRadius:6}} />
+          AppDrop
         </div>
         <div style={{fontSize:11,color:sub,marginTop:2}}>
           {running > 0 ? `${running} app${running>1?"s":""} running` : "No apps running"}
@@ -68,7 +69,7 @@ export default function Sidebar({ page, setPage, apps, theme }: Props) {
           </div>
         )}
       </nav>
-      <div style={{padding:"12px 20px",fontSize:10,color:sub}}>v0.4.0 · AppDrop</div>
+      <div style={{padding:"12px 20px",fontSize:10,color:sub}}>v0.5.0 · AppDrop</div>
     </div>
   )
 }

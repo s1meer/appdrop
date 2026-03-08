@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F1623"/>
+      <stop offset="100%" style="stop-color:#070B12"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" style="stop-color:#82BFFF"/>
+      <stop offset="45%" style="stop-color:#3D8EF8"/>
+      <stop offset="100%" style="stop-color:#1852C4"/>
+    </linearGradient>
+    <linearGradient id="topsheen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.22"/>
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#1A4FA0;stop-opacity:0.55"/>
+      <stop offset="100%" style="stop-color:#1A4FA0;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="blur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="crisp">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- BG -->
+  <rect width="512" height="512" rx="110" ry="110" fill="url(#bg)"/>
+
+  <!-- Center radial glow -->
+  <ellipse cx="256" cy="265" rx="190" ry="175" fill="url(#glow)"/>
+
+  <!-- Glow bloom behind icon (blurred copy) -->
+  <g filter="url(#blur)" opacity="0.55">
+    <rect x="126" y="128" width="260" height="48" rx="24" fill="#3D8EF8"/>
+    <rect x="226" y="176" width="60" height="90" fill="#3D8EF8"/>
+    <polygon points="116,274 196,274 256,346 316,274 396,274 256,390" fill="#3D8EF8"/>
+  </g>
+
+  <!-- Top bar -->
+  <rect x="126" y="128" width="260" height="48" rx="24" fill="url(#blue)"/>
+  <rect x="126" y="128" width="260" height="22" rx="24" fill="url(#topsheen)"/>
+
+  <!-- Stem -->
+  <rect x="226" y="172" width="60" height="92" fill="url(#blue)"/>
+
+  <!-- Bold chevron arrow — solid thick arms -->
+  <polygon points="116,270 200,270 256,338 312,270 396,270 256,400" fill="url(#blue)"/>
+  <!-- Top sheen on chevron -->
+  <polygon points="116,270 200,270 228,304 144,270" fill="white" opacity="0.10"/>
+  <polygon points="396,270 312,270 284,304 368,270" fill="white" opacity="0.10"/>
+
+  <!-- Border gloss -->
+  <rect width="512" height="512" rx="110" ry="110" fill="none"
+        stroke="white" stroke-width="1.5" opacity="0.07"/>
+</svg>
