@@ -1,0 +1,15 @@
+{
+  "id": "mlx-lm",
+  "name": "MLX-LM",
+  "description": "LLM inference on Apple Silicon using Apple's MLX framework",
+  "github_url": "https://github.com/ml-explore/mlx-lm",
+  "stack": "python",
+  "tags": ["llm", "apple-silicon", "mlx"],
+  "default_port": 8080,
+  "stars_approx": 8000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/ml-explore/mlx-lm",
+  "clone_url": "https://github.com/ml-explore/mlx-lm.git"
+}

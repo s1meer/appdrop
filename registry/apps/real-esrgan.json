@@ -1,0 +1,15 @@
+{
+  "id": "real-esrgan",
+  "name": "Real-ESRGAN",
+  "description": "Practical algorithms for general image/video restoration",
+  "github_url": "https://github.com/xinntao/Real-ESRGAN",
+  "stack": "python",
+  "tags": ["image-enhancement", "upscaling", "ai"],
+  "default_port": 7860,
+  "stars_approx": 25000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/xinntao/Real-ESRGAN",
+  "clone_url": "https://github.com/xinntao/Real-ESRGAN.git"
+}

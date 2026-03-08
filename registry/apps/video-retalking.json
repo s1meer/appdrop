@@ -1,0 +1,15 @@
+{
+  "id": "video-retalking",
+  "name": "Video ReTalking",
+  "description": "Realistic video face reenactment and lip-sync",
+  "github_url": "https://github.com/OpenTalker/video-retalking",
+  "stack": "python",
+  "tags": ["video", "face-reenactment", "ai"],
+  "default_port": 7860,
+  "stars_approx": 8000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/OpenTalker/video-retalking",
+  "clone_url": "https://github.com/OpenTalker/video-retalking.git"
+}

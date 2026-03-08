@@ -1,0 +1,15 @@
+{
+  "id": "gpt4all",
+  "name": "GPT4All",
+  "description": "Run powerful LLMs locally on your CPU",
+  "github_url": "https://github.com/nomic-ai/gpt4all",
+  "stack": "python",
+  "tags": ["llm", "chat", "cpu"],
+  "default_port": 4891,
+  "stars_approx": 65000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/nomic-ai/gpt4all",
+  "clone_url": "https://github.com/nomic-ai/gpt4all.git"
+}

@@ -1,18 +1,19 @@
 """
-AppDrop Engine v0.3.0
-Weeks 1+2+3: GitHub parser, stack detection, sandbox, WebSocket progress,
-             conda support, process health, log streaming
+AppDrop Engine v0.6.0
+Weeks 1+2+3+4+5+6+7: GitHub parser, stack detection, sandbox, WebSocket progress,
+             conda support, process health, log streaming, registry, 1-click update,
+             smart launches, system info, Apple Silicon, stub OAuth
 """
-from fastapi import FastAPI, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
-import subprocess, os, shutil, json, uuid, re, socket, asyncio, time
+import subprocess, os, shutil, json, uuid, re, socket, asyncio, time, platform
 from pathlib import Path
 from enum import Enum
 import urllib.request
 
-app = FastAPI(title="AppDrop Engine", version="0.3.0")
+app = FastAPI(title="AppDrop Engine", version="0.6.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 APPS_DIR = Path.home() / ".appdrop" / "apps"
@@ -100,7 +101,7 @@ def fetch_repo_metadata(owner: str, repo: str) -> dict:
     try:
         req = urllib.request.Request(
             f"https://api.github.com/repos/{owner}/{repo}",
-            headers={"User-Agent": "AppDrop/0.3.0"})
+            headers={"User-Agent": "AppDrop/0.6.0"})
         with urllib.request.urlopen(req, timeout=10) as resp:
             d = json.loads(resp.read())
             return {"name": d.get("name", repo), "description": d.get("description",""),
@@ -113,8 +114,6 @@ def fetch_repo_metadata(owner: str, repo: str) -> dict:
 def detect_stack(repo_path: Path) -> Stack:
     if any((repo_path / f).exists() for f in ["environment.yml","environment.yaml"]):
         return Stack.CONDA
-    # Priority: conda > python > node > docker
-    # Node before docker so that apps like Flowise (package.json + Dockerfile) get node
     checks = [
         (Stack.PYTHON, ["requirements.txt","setup.py","pyproject.toml","Pipfile","setup.cfg"]),
         (Stack.NODE,   ["package.json","yarn.lock","pnpm-lock.yaml"]),
@@ -125,9 +124,15 @@ def detect_stack(repo_path: Path) -> Stack:
             return stack
     return Stack.UNKNOWN
 
+# Known Node app overrides: repo name fragment → fixed command
+_NODE_OVERRIDES = {
+    "flowise": "npx flowise start",
+    "jan":     "npm run dev",
+}
+
 def find_launch_command(repo_path: Path, stack: Stack) -> str:
     if stack in (Stack.PYTHON, Stack.CONDA):
-        for e in ["app.py","main.py","server.py","run.py","webui.py","launch.py"]:
+        for e in ["app.py","main.py","server.py","api.py","run.py","webui.py","launch.py"]:
             if (repo_path / e).exists():
                 req = repo_path / "requirements.txt"
                 if req.exists():
@@ -137,19 +142,29 @@ def find_launch_command(repo_path: Path, stack: Stack) -> str:
                 return f"python {e}"
         return "python main.py"
     if stack == Stack.NODE:
+        # Check known app overrides by directory name
+        dir_name = repo_path.name.lower()
+        for key, cmd in _NODE_OVERRIDES.items():
+            if key in dir_name:
+                return cmd
         pkg = repo_path / "package.json"
         if pkg.exists():
             try:
-                scripts = json.loads(pkg.read_text()).get("scripts", {})
+                data = json.loads(pkg.read_text())
+                # Check name field for known overrides
+                pkg_name = data.get("name","").lower()
+                for key, cmd in _NODE_OVERRIDES.items():
+                    if key in pkg_name:
+                        return cmd
+                scripts = data.get("scripts", {})
                 for k in ["dev","start","serve"]:
                     if k in scripts: return f"npm run {k}"
-            except: pass
+            except Exception:
+                pass
         return "npm start"
     if stack == Stack.DOCKER:
-        # Prefer docker-compose if a compose file exists
         for compose in ["docker-compose.yml","docker-compose.yaml"]:
             if (repo_path / compose).exists():
-                # Try `docker compose` (v2 plugin) first; fall back recorded as comment
                 return "docker compose up"
         return "docker compose up"
     return ""
@@ -161,9 +176,9 @@ def find_free_port(start=7800, end=7900) -> int:
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)
             try:
                 s.bind(("127.0.0.1", port))
-                return port  # bind succeeded = port is free
+                return port
             except OSError:
-                continue     # bind failed = port is in use
+                continue
     raise RuntimeError("No free ports in range")
 
 # ── Process health ────────────────────────────────────────────────────────────
@@ -183,6 +198,96 @@ def write_log(app_id: str, line: str):
 def _count_reqs(req_file: Path) -> int:
     return sum(1 for l in req_file.read_text().splitlines()
                if l.strip() and not l.startswith("#"))
+
+# ── System info ───────────────────────────────────────────────────────────────
+def get_system_info() -> dict:
+    try:
+        import psutil
+        ram_gb = psutil.virtual_memory().total / 1e9
+        disk_free_gb = psutil.disk_usage("/").free / 1e9
+        cpu_cores = psutil.cpu_count(logical=False) or psutil.cpu_count(logical=True) or 1
+    except ImportError:
+        ram_gb = 8.0
+        disk_free_gb = 50.0
+        cpu_cores = 4
+
+    sys_platform = platform.system().lower()
+    machine = platform.machine().lower()
+    is_apple_silicon = sys_platform == "darwin" and machine == "arm64"
+    has_metal = is_apple_silicon
+
+    # CPU model
+    cpu_model = platform.processor()
+    if sys_platform == "darwin":
+        try:
+            result = subprocess.run(
+                ["sysctl", "-n", "machdep.cpu.brand_string"],
+                capture_output=True, timeout=3)
+            if result.returncode == 0:
+                cpu_model = result.stdout.decode().strip()
+        except Exception:
+            pass
+
+    has_cuda = shutil.which("nvidia-smi") is not None
+
+    # Platform string
+    if sys_platform == "darwin":
+        plat = "mac"
+    elif sys_platform == "windows":
+        plat = "windows"
+    else:
+        plat = "linux"
+
+    # Recommended apps from registry
+    recommended = []
+    try:
+        for f in sorted(REGISTRY_DIR.glob("*.json")):
+            try:
+                a = json.loads(f.read_text())
+                min_ram = a.get("min_ram_gb", 4)
+                if min_ram <= ram_gb:
+                    # Prioritise Apple Silicon tagged apps on ARM
+                    if is_apple_silicon and "apple-silicon" in a.get("tags", []):
+                        recommended.insert(0, a["id"])
+                    else:
+                        recommended.append(a["id"])
+            except Exception:
+                continue
+    except Exception:
+        pass
+
+    return {
+        "cpu": {
+            "cores": cpu_cores,
+            "model": cpu_model,
+            "is_apple_silicon": is_apple_silicon,
+        },
+        "ram_gb": round(ram_gb, 2),
+        "disk_free_gb": round(disk_free_gb, 2),
+        "gpu": {
+            "has_metal": has_metal,
+            "has_cuda": has_cuda,
+            "vram_gb": None,
+        },
+        "platform": plat,
+        "recommended_apps": recommended[:10],
+    }
+
+def get_compat(app_data: dict, sys_info: dict) -> str:
+    min_ram = app_data.get("min_ram_gb", 4)
+    ram_gb  = sys_info.get("ram_gb", 8)
+    tags    = [t.lower() for t in app_data.get("tags", [])]
+    has_gpu = sys_info.get("gpu", {}).get("has_metal") or sys_info.get("gpu", {}).get("has_cuda")
+
+    if min_ram > ram_gb:
+        return "too_heavy"
+    heavy_tags = {"image-generation", "video", "talking-head", "face-reenactment", "lip-sync"}
+    needs_gpu_tag = bool(heavy_tags & set(tags))
+    if needs_gpu_tag and not has_gpu:
+        return "needs_gpu"
+    if min_ram <= ram_gb / 2:
+        return "excellent"
+    return "ok"
 
 # ── Install worker ────────────────────────────────────────────────────────────
 def _run_install(app_id: str, clone_url: str, install_path: Path, env_vars: dict):
@@ -249,22 +354,58 @@ def _run_install(app_id: str, clone_url: str, install_path: Path, env_vars: dict
 # ── API Routes ────────────────────────────────────────────────────────────────
 @app.get("/health")
 def health():
-    return {"status":"ok","version":"0.3.0","conda": bool(shutil.which("conda"))}
+    return {"status":"ok","version":"0.6.0","conda": bool(shutil.which("conda"))}
 
 @app.get("/apps")
 def list_apps():
     state = load_state()
     apps = list(state["apps"].values())
+    changed = False
     for a in apps:
         if a["status"] == "running" and check_process_health(a["id"]) == "crashed":
             a["status"] = "error"; a["error_message"] = "Process crashed"
+        # Backfill empty launch_command for ready apps whose install_path exists
+        if (a.get("status") == "ready"
+                and not a.get("launch_command")
+                and a.get("install_path")
+                and Path(a["install_path"]).exists()):
+            try:
+                stack = Stack(a.get("stack","unknown"))
+                cmd = find_launch_command(Path(a["install_path"]), stack)
+                if cmd:
+                    a["launch_command"] = cmd
+                    update_app_state(a["id"], launch_command=cmd)
+                    changed = True
+            except Exception:
+                pass
     return {"apps": apps}
+
+@app.get("/system/info")
+def system_info():
+    return get_system_info()
 
 @app.post("/validate-url")
 def validate_url(body: dict):
     parsed = parse_github_url(body.get("url",""))
     if not parsed["valid"]: raise HTTPException(400, "Invalid GitHub URL")
-    return {**parsed, **fetch_repo_metadata(parsed["owner"], parsed["repo"])}
+    result = {**parsed, **fetch_repo_metadata(parsed["owner"], parsed["repo"])}
+    # Match against registry for compatibility
+    try:
+        owner_repo = f"github.com/{parsed['owner']}/{parsed['repo']}".lower()
+        for f in REGISTRY_DIR.glob("*.json"):
+            try:
+                reg_app = json.loads(f.read_text())
+                reg_url = reg_app.get("github_url","").lower().replace("https://","")
+                if reg_url == owner_repo or reg_url == owner_repo + ".git":
+                    sys_info = get_system_info()
+                    result["compatibility"] = get_compat(reg_app, sys_info)
+                    result["registry_id"] = reg_app["id"]
+                    break
+            except Exception:
+                continue
+    except Exception:
+        pass
+    return result
 
 @app.post("/apps/install")
 async def install_app(req: InstallRequest, background_tasks: BackgroundTasks):
@@ -336,7 +477,6 @@ def launch_app(app_id: str):
         for line in env_file.read_text().splitlines():
             if "=" in line and not line.startswith("#"):
                 k, v = line.split("=",1); env[k.strip()] = v.strip()
-    # Docker manages its own ports; other stacks get a free port injected
     if is_docker:
         port = None
     else:
@@ -344,9 +484,7 @@ def launch_app(app_id: str):
         env.update({"PORT":str(port),"GRADIO_SERVER_PORT":str(port),"STREAMLIT_SERVER_PORT":str(port)})
     out = open(APPS_DIR / app_id / "stdout.log","w")
     err = open(APPS_DIR / app_id / "stderr.log","w")
-    # Use shell=True for docker compose so "docker compose up" isn't split incorrectly
     if is_docker:
-        # Try `docker compose` (plugin); fall back to `docker-compose` (standalone)
         docker_cmd = cmd if shutil.which("docker") else cmd.replace("docker compose","docker-compose")
         proc = subprocess.Popen(docker_cmd, shell=True, cwd=str(install_path), env=env, stdout=out, stderr=err)
     else:
@@ -383,10 +521,6 @@ def delete_app(app_id: str):
     WS_CLIENTS.pop(app_id, None)
     return {"deleted": app_id}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8742, log_level="warning")
-
 # ════════════════════════════════════════════════════════════════════════════════
 # WEEK 4 — App Store Registry + 1-Click Update
 # ════════════════════════════════════════════════════════════════════════════════
@@ -405,7 +539,6 @@ def get_registry(tag: Optional[str] = None, stack: Optional[str] = None, q: Opti
         except Exception:
             continue
 
-    # Filter
     if tag:
         apps = [a for a in apps if tag.lower() in [t.lower() for t in a.get("tags", [])]]
     if stack:
@@ -414,13 +547,14 @@ def get_registry(tag: Optional[str] = None, stack: Optional[str] = None, q: Opti
         q = q.lower()
         apps = [a for a in apps if q in a.get("name","").lower() or q in a.get("description","").lower()]
 
-    # Merge with installed state
     state = load_state()
     installed_urls = {v["github_url"]: v["id"] for v in state["apps"].values()}
+    sys_info = get_system_info()
     for a in apps:
         a["installed"] = a.get("github_url","") in installed_urls
         if a["installed"]:
             a["installed_id"] = installed_urls[a["github_url"]]
+        a["compatibility"] = get_compat(a, sys_info)
 
     return {"total": len(apps), "apps": apps}
 
@@ -464,7 +598,6 @@ def submit_app(body: dict):
         "submitted_at": time.time(),
         "status": "pending_review",
     }
-    # Save as pending (not in main registry until reviewed)
     pending_dir = REGISTRY_DIR.parent / "pending"
     pending_dir.mkdir(exist_ok=True)
     (pending_dir / f"{app_id}.json").write_text(json.dumps(submission, indent=2))
@@ -491,7 +624,6 @@ async def update_app(app_id: str, background_tasks: BackgroundTasks):
 def _run_update(app_id: str, install_path: Path, app_data: dict):
     write_log(app_id, "=== UPDATE STARTED ===")
     try:
-        # Step 1: git pull
         write_log(app_id, "git pull...")
         r = subprocess.run(["git", "-C", str(install_path), "pull", "--rebase"],
                           capture_output=True, timeout=120)
@@ -500,7 +632,6 @@ def _run_update(app_id: str, install_path: Path, app_data: dict):
         write_log(app_id, "✓ git pull done")
         update_app_state(app_id, install_pct=50, install_label="Updating dependencies...")
 
-        # Step 2: reinstall deps
         stack = Stack(app_data.get("stack", "unknown"))
         if stack == Stack.PYTHON:
             pip = install_path / ".venv" / "bin" / "pip"
@@ -545,3 +676,14 @@ def check_for_update(app_id: str):
                     capture_output=True).stdout.decode().strip()}
     except Exception as e:
         return {"update_available": False, "reason": str(e)}
+
+# ── Mount Auth Router ─────────────────────────────────────────────────────────
+try:
+    from auth import auth_router
+    app.include_router(auth_router)
+except ImportError:
+    pass
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8742, log_level="warning")

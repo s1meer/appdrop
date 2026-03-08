@@ -1,0 +1,15 @@
+{
+  "id": "sadtalker",
+  "name": "SadTalker",
+  "description": "Stylized audio-driven single image talking face animation",
+  "github_url": "https://github.com/OpenTalker/SadTalker",
+  "stack": "python",
+  "tags": ["video", "talking-head", "ai"],
+  "default_port": 7860,
+  "stars_approx": 13000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/OpenTalker/SadTalker",
+  "clone_url": "https://github.com/OpenTalker/SadTalker.git"
+}

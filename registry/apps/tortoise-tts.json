@@ -1,0 +1,15 @@
+{
+  "id": "tortoise-tts",
+  "name": "Tortoise TTS",
+  "description": "Multi-voice TTS system with impressive quality",
+  "github_url": "https://github.com/neonbjb/tortoise-tts",
+  "stack": "python",
+  "tags": ["audio", "tts", "voice-cloning"],
+  "default_port": 7860,
+  "stars_approx": 12000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/neonbjb/tortoise-tts",
+  "clone_url": "https://github.com/neonbjb/tortoise-tts.git"
+}

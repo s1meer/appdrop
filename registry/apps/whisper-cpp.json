@@ -1,0 +1,15 @@
+{
+  "id": "whisper-cpp",
+  "name": "whisper.cpp",
+  "description": "High-performance speech recognition via C++ port of Whisper",
+  "github_url": "https://github.com/ggerganov/whisper.cpp",
+  "stack": "python",
+  "tags": ["transcription", "audio", "cpp"],
+  "default_port": 8080,
+  "stars_approx": 32000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/ggerganov/whisper.cpp",
+  "clone_url": "https://github.com/ggerganov/whisper.cpp.git"
+}

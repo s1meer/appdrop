@@ -1,0 +1,15 @@
+{
+  "id": "ollama",
+  "name": "Ollama",
+  "description": "Run large language models locally with a simple API",
+  "github_url": "https://github.com/ollama/ollama",
+  "stack": "node",
+  "tags": ["llm", "api", "local-ai"],
+  "default_port": 11434,
+  "stars_approx": 75000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/ollama/ollama",
+  "clone_url": "https://github.com/ollama/ollama.git"
+}

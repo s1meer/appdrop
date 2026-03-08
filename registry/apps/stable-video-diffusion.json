@@ -1,0 +1,15 @@
+{
+  "id": "stable-video-diffusion",
+  "name": "Stable Video Diffusion",
+  "description": "Image-to-video generation from Stability AI",
+  "github_url": "https://github.com/Stability-AI/generative-models",
+  "stack": "python",
+  "tags": ["video", "image-generation", "ai"],
+  "default_port": 7860,
+  "stars_approx": 6000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 24,
+  "thumbnail": "https://opengraph.githubassets.com/1/Stability-AI/generative-models",
+  "clone_url": "https://github.com/Stability-AI/generative-models.git"
+}

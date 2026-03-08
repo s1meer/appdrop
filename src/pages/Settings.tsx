@@ -1,9 +1,16 @@
-interface Props { theme:"dark"|"light"; setTheme:(t:"dark"|"light")=>void }
+import { AuthUser } from "../hooks/useAuth"
 
-export default function Settings({ theme, setTheme }: Props) {
-  const text = theme==="dark" ? "#E8EAF0" : "#1A1D2E"
-  const sub  = theme==="dark" ? "#5A6278" : "#8A8FA8"
-  const bg2  = theme==="dark" ? "#141720" : "#FFFFFF"
+interface Props {
+  theme: "dark"|"light"
+  setTheme: (t:"dark"|"light")=>void
+  user?: AuthUser | null
+  onLogout?: () => void
+}
+
+export default function Settings({ theme, setTheme, user, onLogout }: Props) {
+  const text   = theme==="dark" ? "#E8EAF0" : "#1A1D2E"
+  const sub    = theme==="dark" ? "#5A6278" : "#8A8FA8"
+  const bg2    = theme==="dark" ? "#141720" : "#FFFFFF"
   const border = theme==="dark" ? "#1E2235" : "#D8DCF0"
 
   const Row = ({label,children}:{label:string,children:React.ReactNode}) => (
@@ -17,6 +24,40 @@ export default function Settings({ theme, setTheme }: Props) {
   return (
     <div style={{flex:1,overflow:"auto",padding:32,maxWidth:600}}>
       <h1 style={{color:text,fontSize:22,fontWeight:800,margin:"0 0 24px"}}>Settings</h1>
+
+      {/* Profile card */}
+      {user && (
+        <div style={{background:bg2,border:`1px solid ${border}`,borderRadius:12,
+          padding:20,marginBottom:20,display:"flex",alignItems:"center",gap:16}}>
+          {user.avatar_url ? (
+            <img src={user.avatar_url} width={52} height={52}
+              style={{borderRadius:"50%",objectFit:"cover",flexShrink:0}} />
+          ) : (
+            <div style={{width:52,height:52,borderRadius:"50%",background:"#4F8EF7",
+              display:"flex",alignItems:"center",justifyContent:"center",
+              color:"#fff",fontSize:22,fontWeight:700,flexShrink:0}}>
+              {(user.name||user.email||"?")[0].toUpperCase()}
+            </div>
+          )}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:16,fontWeight:700,color:text,marginBottom:2}}>
+              {user.name || "Guest"}
+            </div>
+            <div style={{fontSize:12,color:sub}}>{user.email}</div>
+            <div style={{fontSize:11,color:sub,marginTop:2,textTransform:"capitalize"}}>
+              {user.isGuest ? "Guest session" : `via ${user.provider}`}
+            </div>
+          </div>
+          {!user.isGuest && (
+            <button onClick={onLogout}
+              style={{background:"none",border:`1px solid ${border}`,borderRadius:7,
+                padding:"7px 14px",color:sub,fontSize:12,cursor:"pointer"}}>
+              Sign out
+            </button>
+          )}
+        </div>
+      )}
+
       <div style={{background:bg2,border:`1px solid ${border}`,borderRadius:12,padding:"0 20px"}}>
         <Row label="Theme">
           <div style={{display:"flex",gap:8}}>
@@ -38,7 +79,7 @@ export default function Settings({ theme, setTheme }: Props) {
           <span style={{color:sub,fontSize:12,fontFamily:"monospace"}}>7800 – 7900</span>
         </Row>
         <Row label="Version">
-          <span style={{color:"#4F8EF7",fontSize:12}}>v0.4.0</span>
+          <span style={{color:"#4F8EF7",fontSize:12}}>v0.6.0</span>
         </Row>
       </div>
       <div style={{marginTop:24,background:bg2,border:`1px solid ${border}`,borderRadius:12,padding:20}}>

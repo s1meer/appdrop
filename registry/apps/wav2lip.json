@@ -1,0 +1,15 @@
+{
+  "id": "wav2lip",
+  "name": "Wav2Lip",
+  "description": "Accurately lip-sync videos to any speech in the wild",
+  "github_url": "https://github.com/Rudrabha/Wav2Lip",
+  "stack": "python",
+  "tags": ["video", "lip-sync", "ai"],
+  "default_port": 9000,
+  "stars_approx": 9000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/Rudrabha/Wav2Lip",
+  "clone_url": "https://github.com/Rudrabha/Wav2Lip.git"
+}

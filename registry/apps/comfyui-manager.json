@@ -1,0 +1,15 @@
+{
+  "id": "comfyui-manager",
+  "name": "ComfyUI Manager",
+  "description": "Extension to manage ComfyUI custom nodes and models",
+  "github_url": "https://github.com/ltdrdata/ComfyUI-Manager",
+  "stack": "python",
+  "tags": ["image-generation", "stable-diffusion", "plugin"],
+  "default_port": 8188,
+  "stars_approx": 6000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/ltdrdata/ComfyUI-Manager",
+  "clone_url": "https://github.com/ltdrdata/ComfyUI-Manager.git"
+}

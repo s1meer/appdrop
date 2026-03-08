@@ -1,16 +1,12 @@
 {
   "version": "1.0.0",
-  "total": 10,
+  "total": 28,
   "apps": [
     {
       "id": "comfyui",
       "name": "ComfyUI",
       "stack": "python",
-      "tags": [
-        "image-generation",
-        "stable-diffusion",
-        "ai"
-      ],
+      "tags": ["image-generation", "stable-diffusion", "ai"],
       "stars_approx": 45000,
       "description": "Stable Diffusion web UI with node-based workflow editor"
     },
@@ -18,11 +14,7 @@
       "id": "automatic1111",
       "name": "Stable Diffusion WebUI",
       "stack": "python",
-      "tags": [
-        "image-generation",
-        "stable-diffusion",
-        "ai"
-      ],
+      "tags": ["image-generation", "stable-diffusion", "ai"],
       "stars_approx": 38000,
       "description": "Most popular Stable Diffusion interface by AUTOMATIC1111"
     },
@@ -30,12 +22,7 @@
       "id": "open-webui",
       "name": "Open WebUI",
       "stack": "node",
-      "tags": [
-        "llm",
-        "chat",
-        "ollama",
-        "ai"
-      ],
+      "tags": ["llm", "chat", "ollama", "ai"],
       "stars_approx": 12000,
       "description": "ChatGPT-like interface for Ollama local LLMs"
     },
@@ -43,11 +30,7 @@
       "id": "whisper-webui",
       "name": "Whisper WebUI",
       "stack": "python",
-      "tags": [
-        "transcription",
-        "audio",
-        "ai"
-      ],
+      "tags": ["transcription", "audio", "ai"],
       "stars_approx": 3200,
       "description": "Transcribe audio and video using OpenAI Whisper"
     },
@@ -55,23 +38,15 @@
       "id": "text-gen-webui",
       "name": "Text Generation WebUI",
       "stack": "python",
-      "tags": [
-        "llm",
-        "chat",
-        "ai"
-      ],
+      "tags": ["llm", "chat", "ai"],
       "stars_approx": 18000,
-      "description": "Interface for running local LLMs \u2014 llama, mistral, phi"
+      "description": "Interface for running local LLMs — llama, mistral, phi"
     },
     {
       "id": "invokeai",
       "name": "InvokeAI",
       "stack": "python",
-      "tags": [
-        "image-generation",
-        "stable-diffusion",
-        "ai"
-      ],
+      "tags": ["image-generation", "stable-diffusion", "ai"],
       "stars_approx": 8500,
       "description": "Professional Stable Diffusion creative toolkit"
     },
@@ -79,11 +54,7 @@
       "id": "lobe-chat",
       "name": "Lobe Chat",
       "stack": "node",
-      "tags": [
-        "chat",
-        "llm",
-        "ui"
-      ],
+      "tags": ["chat", "llm", "ui"],
       "stars_approx": 38000,
       "description": "Modern ChatGPT/Claude UI with plugins and agents"
     },
@@ -91,11 +62,7 @@
       "id": "flowise",
       "name": "Flowise",
       "stack": "node",
-      "tags": [
-        "llm",
-        "nocode",
-        "automation"
-      ],
+      "tags": ["llm", "nocode", "automation"],
       "stars_approx": 6200,
       "description": "Drag-drop UI for building LLM pipelines, no code"
     },
@@ -103,11 +70,7 @@
       "id": "langflow",
       "name": "Langflow",
       "stack": "python",
-      "tags": [
-        "llm",
-        "langchain",
-        "nocode"
-      ],
+      "tags": ["llm", "langchain", "nocode"],
       "stars_approx": 12000,
       "description": "Visual editor for LangChain and LlamaIndex pipelines"
     },
@@ -115,13 +78,153 @@
       "id": "localai",
       "name": "LocalAI",
       "stack": "docker",
-      "tags": [
-        "llm",
-        "api",
-        "openai-compatible"
-      ],
+      "tags": ["llm", "api", "openai-compatible"],
       "stars_approx": 14000,
       "description": "OpenAI-compatible REST API running 100% locally"
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "stack": "node",
+      "tags": ["llm", "api", "local-ai"],
+      "stars_approx": 75000,
+      "description": "Run large language models locally with a simple API"
+    },
+    {
+      "id": "llama-cpp",
+      "name": "llama.cpp",
+      "stack": "python",
+      "tags": ["llm", "inference", "cpp"],
+      "stars_approx": 60000,
+      "description": "Efficient LLM inference in C++ with Python bindings"
+    },
+    {
+      "id": "koboldcpp",
+      "name": "KoboldCpp",
+      "stack": "python",
+      "tags": ["llm", "chat", "api"],
+      "stars_approx": 8000,
+      "description": "Easy-to-use LLM inference with KoboldAI-compatible API"
+    },
+    {
+      "id": "stable-diffusion-cpp",
+      "name": "stable-diffusion.cpp",
+      "stack": "python",
+      "tags": ["image-generation", "stable-diffusion", "cpp"],
+      "stars_approx": 10000,
+      "description": "Stable Diffusion in C++ with minimal dependencies"
+    },
+    {
+      "id": "fooocus",
+      "name": "Fooocus",
+      "stack": "python",
+      "tags": ["image-generation", "stable-diffusion", "ai"],
+      "stars_approx": 38000,
+      "description": "Focus on prompting like Midjourney — no manual tweaking needed"
+    },
+    {
+      "id": "jan",
+      "name": "Jan",
+      "stack": "node",
+      "tags": ["llm", "chat", "offline"],
+      "stars_approx": 22000,
+      "description": "Open-source ChatGPT alternative that runs 100% offline"
+    },
+    {
+      "id": "mlx-lm",
+      "name": "MLX-LM",
+      "stack": "python",
+      "tags": ["llm", "apple-silicon", "mlx"],
+      "stars_approx": 8000,
+      "description": "LLM inference on Apple Silicon using Apple's MLX framework"
+    },
+    {
+      "id": "whisper-cpp",
+      "name": "whisper.cpp",
+      "stack": "python",
+      "tags": ["transcription", "audio", "cpp"],
+      "stars_approx": 32000,
+      "description": "High-performance speech recognition via C++ port of Whisper"
+    },
+    {
+      "id": "bark",
+      "name": "Bark",
+      "stack": "python",
+      "tags": ["audio", "tts", "ai"],
+      "stars_approx": 35000,
+      "description": "Text-to-audio model with voice cloning and sound effects"
+    },
+    {
+      "id": "tortoise-tts",
+      "name": "Tortoise TTS",
+      "stack": "python",
+      "tags": ["audio", "tts", "voice-cloning"],
+      "stars_approx": 12000,
+      "description": "Multi-voice TTS system with impressive quality"
+    },
+    {
+      "id": "stable-video-diffusion",
+      "name": "Stable Video Diffusion",
+      "stack": "python",
+      "tags": ["video", "image-generation", "ai"],
+      "stars_approx": 6000,
+      "description": "Image-to-video generation from Stability AI"
+    },
+    {
+      "id": "video-retalking",
+      "name": "Video ReTalking",
+      "stack": "python",
+      "tags": ["video", "face-reenactment", "ai"],
+      "stars_approx": 8000,
+      "description": "Realistic video face reenactment and lip-sync"
+    },
+    {
+      "id": "sadtalker",
+      "name": "SadTalker",
+      "stack": "python",
+      "tags": ["video", "talking-head", "ai"],
+      "stars_approx": 13000,
+      "description": "Stylized audio-driven single image talking face animation"
+    },
+    {
+      "id": "wav2lip",
+      "name": "Wav2Lip",
+      "stack": "python",
+      "tags": ["video", "lip-sync", "ai"],
+      "stars_approx": 9000,
+      "description": "Accurately lip-sync videos to any speech in the wild"
+    },
+    {
+      "id": "musicgen",
+      "name": "MusicGen",
+      "stack": "python",
+      "tags": ["audio", "music-generation", "ai"],
+      "stars_approx": 20000,
+      "description": "Meta's music generation models via AudioCraft framework"
+    },
+    {
+      "id": "real-esrgan",
+      "name": "Real-ESRGAN",
+      "stack": "python",
+      "tags": ["image-enhancement", "upscaling", "ai"],
+      "stars_approx": 25000,
+      "description": "Practical algorithms for general image/video restoration"
+    },
+    {
+      "id": "gpt4all",
+      "name": "GPT4All",
+      "stack": "python",
+      "tags": ["llm", "chat", "cpu"],
+      "stars_approx": 65000,
+      "description": "Run powerful LLMs locally on your CPU"
+    },
+    {
+      "id": "comfyui-manager",
+      "name": "ComfyUI Manager",
+      "stack": "python",
+      "tags": ["image-generation", "stable-diffusion", "plugin"],
+      "stars_approx": 6000,
+      "description": "Extension to manage ComfyUI custom nodes and models"
     }
   ]
 }

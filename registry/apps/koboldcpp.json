@@ -1,0 +1,15 @@
+{
+  "id": "koboldcpp",
+  "name": "KoboldCpp",
+  "description": "Easy-to-use LLM inference with KoboldAI-compatible API",
+  "github_url": "https://github.com/LostRuins/koboldcpp",
+  "stack": "python",
+  "tags": ["llm", "chat", "api"],
+  "default_port": 5001,
+  "stars_approx": 8000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/LostRuins/koboldcpp",
+  "clone_url": "https://github.com/LostRuins/koboldcpp.git"
+}

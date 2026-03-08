@@ -1,0 +1,15 @@
+{
+  "id": "llama-cpp",
+  "name": "llama.cpp",
+  "description": "Efficient LLM inference in C++ with Python bindings",
+  "github_url": "https://github.com/ggerganov/llama.cpp",
+  "stack": "python",
+  "tags": ["llm", "inference", "cpp"],
+  "default_port": 8080,
+  "stars_approx": 60000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/ggerganov/llama.cpp",
+  "clone_url": "https://github.com/ggerganov/llama.cpp.git"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "fooocus",
+  "name": "Fooocus",
+  "description": "Focus on prompting like Midjourney — no manual tweaking needed",
+  "github_url": "https://github.com/lllyasviel/Fooocus",
+  "stack": "python",
+  "tags": ["image-generation", "stable-diffusion", "ai"],
+  "default_port": 7865,
+  "stars_approx": 38000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/lllyasviel/Fooocus",
+  "clone_url": "https://github.com/lllyasviel/Fooocus.git"
+}

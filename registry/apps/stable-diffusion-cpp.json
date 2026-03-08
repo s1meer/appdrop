@@ -1,0 +1,15 @@
+{
+  "id": "stable-diffusion-cpp",
+  "name": "stable-diffusion.cpp",
+  "description": "Stable Diffusion in C++ with minimal dependencies",
+  "github_url": "https://github.com/leejet/stable-diffusion.cpp",
+  "stack": "python",
+  "tags": ["image-generation", "stable-diffusion", "cpp"],
+  "default_port": 8080,
+  "stars_approx": 10000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/leejet/stable-diffusion.cpp",
+  "clone_url": "https://github.com/leejet/stable-diffusion.cpp.git"
+}

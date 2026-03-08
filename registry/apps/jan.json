@@ -1,0 +1,15 @@
+{
+  "id": "jan",
+  "name": "Jan",
+  "description": "Open-source ChatGPT alternative that runs 100% offline",
+  "github_url": "https://github.com/janhq/jan",
+  "stack": "node",
+  "tags": ["llm", "chat", "offline"],
+  "default_port": 1337,
+  "stars_approx": 22000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 8,
+  "thumbnail": "https://opengraph.githubassets.com/1/janhq/jan",
+  "clone_url": "https://github.com/janhq/jan.git"
+}

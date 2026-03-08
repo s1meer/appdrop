@@ -1,0 +1,15 @@
+{
+  "id": "musicgen",
+  "name": "MusicGen",
+  "description": "Meta's music generation models via AudioCraft framework",
+  "github_url": "https://github.com/facebookresearch/audiocraft",
+  "stack": "python",
+  "tags": ["audio", "music-generation", "ai"],
+  "default_port": 7860,
+  "stars_approx": 20000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 16,
+  "thumbnail": "https://opengraph.githubassets.com/1/facebookresearch/audiocraft",
+  "clone_url": "https://github.com/facebookresearch/audiocraft.git"
+}
