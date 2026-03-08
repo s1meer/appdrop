@@ -180,8 +180,8 @@ def _run_install(app_id: str, clone_url: str, install_path: Path, env_vars: dict
     write_log(app_id, f"Starting install: {clone_url}")
     try:
         emit(app_id, InstallStage.CLONING, f"Cloning {clone_url}")
-        r = subprocess.run(["git","clone","--depth=1",clone_url,str(install_path)],
-                           capture_output=True, timeout=300)
+        r = subprocess.run(["git","clone","--depth=1",clone_url,"."],
+                           capture_output=True, timeout=300, cwd=str(install_path))
         if r.returncode != 0:
             raise subprocess.CalledProcessError(r.returncode,"git clone",stderr=r.stderr)
         write_log(app_id, "✓ Cloned")

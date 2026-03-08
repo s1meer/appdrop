@@ -1,0 +1,17 @@
+{
+  "id": "live-test-app",
+  "name": "Live Test App",
+  "description": "",
+  "github_url": "https://github.com/testuser/live-test-app",
+  "clone_url": "https://github.com/testuser/live-test-app.git",
+  "stack": "python",
+  "tags": [],
+  "default_port": 8080,
+  "stars_approx": 0,
+  "verified": false,
+  "added_by": "community",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/testuser/live-test-app",
+  "submitted_at": 1772957933.041152,
+  "status": "pending_review"
+}

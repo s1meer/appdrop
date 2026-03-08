@@ -13,14 +13,14 @@ PASS=0; FAIL=0
 check() {
   local label="$1"; local cmd="$2"; local expect="$3"
   local result=$(eval "$cmd" 2>/dev/null)
-  if echo "$result" | grep -q "$expect"; then
+  if echo "$result" | grep -qE "$expect"; then
     echo -e "  ${GREEN}✓${NC} $label"
-    ((PASS++))
+    PASS=$((PASS+1))
   else
     echo -e "  ${RED}✗${NC} $label"
     echo -e "    ${YELLOW}expected: $expect${NC}"
     echo -e "    ${YELLOW}got: $(echo $result | head -c 100)${NC}"
-    ((FAIL++))
+    FAIL=$((FAIL+1))
   fi
 }
 
@@ -92,7 +92,7 @@ APP_ID=$(echo $INSTALL_RESP | python3 -c "import sys,json; print(json.load(sys.s
 
 if [ -n "$APP_ID" ]; then
   echo -e "  ${GREEN}✓${NC} Install started (app_id: $APP_ID)"
-  ((PASS++))
+  PASS=$((PASS+1))
 
   # Poll for completion (max 60s)
   echo -e "  ${YELLOW}Waiting for install to complete...${NC}"
@@ -105,21 +105,21 @@ if [ -n "$APP_ID" ]; then
     [ "$APP_STATUS" = "ready" ] || [ "$APP_STATUS" = "error" ] && break
   done
 
-  check "app reached ready/error state" "echo $APP_STATUS" "ready\|error"
+  check "app reached ready/error state" "echo $APP_STATUS" "ready|error"
   check "GET /apps/$APP_ID works"       "curl -sf $BASE/apps/$APP_ID" '"id"'
   check "GET /apps/$APP_ID/logs works"  "curl -sf $BASE/apps/$APP_ID/logs" '"logs"'
   check "update-check endpoint works"   "curl -sf $BASE/apps/$APP_ID/update-check" '"update_available"'
 
   # Update check
   UPDATE_RESP=$(curl -sf -X POST $BASE/apps/$APP_ID/update 2>/dev/null || echo "{}")
-  check "update accepted or blocked"    "echo $UPDATE_RESP" '"status"\|"detail"'
+  check "update accepted or blocked"    "echo \"$UPDATE_RESP\"" "status|detail"
 
   # Delete
   DEL=$(curl -sf -X DELETE $BASE/apps/$APP_ID 2>/dev/null || echo "{}")
-  check "DELETE app works"              "echo $DEL" '"deleted"'
+  check "DELETE app works"              "echo \"$DEL\"" "deleted"
 else
   echo -e "  ${RED}✗${NC} Install request failed"
-  ((FAIL++))
+  FAIL=$((FAIL+1))
 fi
 
 # ── Summary ───────────────────────────────────────────────────────────────────

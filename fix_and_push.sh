@@ -12,7 +12,7 @@ echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━�
 # ── 1. Python engine tests ────────────────────────────────────────────────────
 echo -e "\n${YELLOW}[1/5] Running Python engine tests...${NC}"
 pip install fastapi uvicorn pydantic pytest pytest-asyncio httpx websockets -q --break-system-packages 2>/dev/null || true
-python -m pytest tests/ -q --tb=short
+.venv/bin/python -m pytest tests/ -q --tb=short
 echo -e "${GREEN}✓ Python tests passed${NC}"
 
 # ── 2. Frontend tests + build ─────────────────────────────────────────────────
