@@ -53,6 +53,20 @@ jobs:
           targets: ${{ matrix.rust-targets }}
       - run: npm install
 
+      # macOS only: import Apple certificate — skipped when secrets are absent
+      - name: Import Apple certificate
+        if: runner.os == 'macOS' && secrets.APPLE_CERTIFICATE != ''
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
+          security create-keychain -p appdrop-ci build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p appdrop-ci build.keychain
+          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k appdrop-ci build.keychain
+
       # Windows only: generate self-signed cert, export as base64 PFX
       - name: Generate Windows self-signed certificate
         if: runner.os == 'Windows'
@@ -72,7 +86,7 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # macOS — skipped automatically when secrets are absent
+          # macOS — only active when secrets are present (imported above)
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
@@ -82,6 +96,9 @@ jobs:
           # Windows — set by step above
           WINDOWS_CERTIFICATE: ${{ env.WINDOWS_CERTIFICATE }}
           WINDOWS_CERTIFICATE_PASSWORD: ${{ env.WINDOWS_CERTIFICATE_PASSWORD }}
+          # Skip updater signing and binary stripping when no signing certs
+          TAURI_PRIVATE_KEY: ''
+          NO_STRIP: 1
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'AppDrop ${{ github.ref_name }}'
