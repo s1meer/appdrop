@@ -1,30 +1,27 @@
-name: AppDrop CI/CD
+name: AppDrop CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  # ─── Python Engine Tests ──────────────────────────────────────────────────
   test-engine:
-    name: Test Python Engine
+    name: ✅ Python Engine Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - name: Install engine deps
-        run: |
-          pip install fastapi uvicorn pydantic pytest pytest-asyncio httpx
-      - name: Run engine tests
+      - name: Install deps
+        run: pip install fastapi uvicorn pydantic pytest pytest-asyncio httpx websockets
+      - name: Run all tests
         run: pytest tests/ -v --tb=short
 
-  # ─── Frontend Tests ───────────────────────────────────────────────────────
   test-frontend:
-    name: Test React Frontend
+    name: ✅ Frontend Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,73 +29,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm install
-      - run: npm run build
-      - run: npm test -- --run
-
-  # ─── Build Mac Desktop ────────────────────────────────────────────────────
-  build-mac:
-    name: Build macOS (.dmg)
-    runs-on: macos-latest
-    needs: [test-engine, test-frontend]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-apple-darwin,x86_64-apple-darwin
-      - name: Install frontend deps
+      - name: Install deps
         run: npm install
-      - name: Install Tauri CLI
-        run: npm install -g @tauri-apps/cli
-      - name: Build macOS universal binary
-        run: npm run tauri build -- --target universal-apple-darwin
-      - name: Upload .dmg artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: AppDrop-macOS
-          path: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
-
-  # ─── Build Windows Desktop ────────────────────────────────────────────────
-  build-windows:
-    name: Build Windows (.exe)
-    runs-on: windows-latest
-    needs: [test-engine, test-frontend]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Install frontend deps
-        run: npm install
-      - name: Install Tauri CLI
-        run: npm install -g @tauri-apps/cli
-      - name: Build Windows installer
-        run: npm run tauri build
-      - name: Upload .exe artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: AppDrop-Windows
-          path: src-tauri/target/release/bundle/msi/*.msi
-
-  # ─── Release (on tag push) ────────────────────────────────────────────────
-  release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    needs: [build-mac, build-windows]
-    if: startsWith(github.ref, 'refs/tags/v')
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            AppDrop-macOS/*.dmg
-            AppDrop-Windows/*.msi
-          generate_release_notes: true
+      - name: Run tests
+        run: npm test
+      - name: Build check
+        run: npm run build
