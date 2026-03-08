@@ -30,7 +30,7 @@ export default function Sidebar({ page, setPage, apps, theme }: Props) {
       {/* Logo */}
       <div style={{padding:"24px 20px 16px",borderBottom:`1px solid ${theme==="dark"?"#1A1D2E":"#D8DCF0"}`}}>
         <div style={{fontSize:22,fontWeight:900,color:text,letterSpacing:-1,display:"flex",alignItems:"center",gap:8}}>
-          <img src="/src-tauri/icons/icon.png" width="28" height="28" style={{borderRadius:6}} />
+          <img src="/icons/icon.png" width="28" height="28" style={{borderRadius:6}} />
           AppDrop
         </div>
         <div style={{fontSize:11,color:sub,marginTop:2}}>
