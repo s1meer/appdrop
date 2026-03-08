@@ -177,13 +177,13 @@ def _count_reqs(req_file: Path) -> int:
 
 # ── Install worker ────────────────────────────────────────────────────────────
 def _run_install(app_id: str, clone_url: str, install_path: Path, env_vars: dict):
-    write_log(app_id, f"Starting install: {clone_url}")
     try:
         emit(app_id, InstallStage.CLONING, f"Cloning {clone_url}")
-        r = subprocess.run(["git","clone","--depth=1",clone_url,"."],
-                           capture_output=True, timeout=300, cwd=str(install_path))
+        r = subprocess.run(["git","clone","--depth=1",clone_url,str(install_path)],
+                           capture_output=True, timeout=300)
         if r.returncode != 0:
             raise subprocess.CalledProcessError(r.returncode,"git clone",stderr=r.stderr)
+        write_log(app_id, f"Starting install: {clone_url}")
         write_log(app_id, "✓ Cloned")
 
         emit(app_id, InstallStage.DETECTING, "Scanning repo files...")

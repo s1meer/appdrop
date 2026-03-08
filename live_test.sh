@@ -111,7 +111,7 @@ if [ -n "$APP_ID" ]; then
   check "update-check endpoint works"   "curl -sf $BASE/apps/$APP_ID/update-check" '"update_available"'
 
   # Update check
-  UPDATE_RESP=$(curl -sf -X POST $BASE/apps/$APP_ID/update 2>/dev/null || echo "{}")
+  UPDATE_RESP=$(curl -s -X POST $BASE/apps/$APP_ID/update 2>/dev/null || echo "{}")
   check "update accepted or blocked"    "echo \"$UPDATE_RESP\"" "status|detail"
 
   # Delete
