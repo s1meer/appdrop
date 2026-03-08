@@ -74,9 +74,11 @@ appdrop/
 ## 📍 Roadmap
 
 - [x] **Week 1** — Engine, stack detection, install, CI/CD, 16 tests passing
-- [ ] **Week 2** — GitHub parser, real install flow, progress streaming
-- [ ] **Week 3** — LLM README parser, env wizard, web version
-- [ ] **Week 4** — App Store, community registry, launch
+- [x] **Week 2** — GitHub parser, real install flow, progress streaming, 28 tests
+- [x] **Week 3** — LLM README parser, env wizard, WebSocket, conda, 113 tests
+- [x] **Week 4** — App Store, community registry, 1-click update, 181 tests
+- [x] **Week 5** — Full UI live, Tauri desktop shell, Next.js web, 23/23 live tests
+- [ ] **Week 6** — Signed builds & GitHub Releases (`.dmg` / `.exe`), Windows CI
 
 ---
 
