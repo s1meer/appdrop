@@ -101,10 +101,10 @@ class TestStage2_StackDetection:
         (tmp_path / "Dockerfile").write_text("FROM python:3.11\n")
         assert detect_stack(tmp_path) == Stack.CONDA
 
-    def test_S2_11_priority_docker_over_python(self, tmp_path):
+    def test_S2_11_priority_python_over_docker(self, tmp_path):
         (tmp_path / "Dockerfile").write_text("FROM python:3.11\n")
         (tmp_path / "requirements.txt").write_text("fastapi\n")
-        assert detect_stack(tmp_path) == Stack.DOCKER
+        assert detect_stack(tmp_path) == Stack.PYTHON
 
     def test_S2_12_priority_python_over_node(self, tmp_path):
         (tmp_path / "requirements.txt").write_text("fastapi\n")

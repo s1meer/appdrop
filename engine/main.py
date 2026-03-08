@@ -113,12 +113,14 @@ def fetch_repo_metadata(owner: str, repo: str) -> dict:
 def detect_stack(repo_path: Path) -> Stack:
     if any((repo_path / f).exists() for f in ["environment.yml","environment.yaml"]):
         return Stack.CONDA
-    checks = {
-        Stack.DOCKER: ["Dockerfile","docker-compose.yml","docker-compose.yaml"],
-        Stack.PYTHON: ["requirements.txt","setup.py","pyproject.toml","Pipfile","setup.cfg"],
-        Stack.NODE:   ["package.json","yarn.lock","pnpm-lock.yaml"],
-    }
-    for stack, files in checks.items():
+    # Priority: conda > python > node > docker
+    # Node before docker so that apps like Flowise (package.json + Dockerfile) get node
+    checks = [
+        (Stack.PYTHON, ["requirements.txt","setup.py","pyproject.toml","Pipfile","setup.cfg"]),
+        (Stack.NODE,   ["package.json","yarn.lock","pnpm-lock.yaml"]),
+        (Stack.DOCKER, ["Dockerfile","docker-compose.yml","docker-compose.yaml"]),
+    ]
+    for stack, files in checks:
         if any((repo_path / f).exists() for f in files):
             return stack
     return Stack.UNKNOWN
@@ -143,6 +145,13 @@ def find_launch_command(repo_path: Path, stack: Stack) -> str:
                     if k in scripts: return f"npm run {k}"
             except: pass
         return "npm start"
+    if stack == Stack.DOCKER:
+        # Prefer docker-compose if a compose file exists
+        for compose in ["docker-compose.yml","docker-compose.yaml"]:
+            if (repo_path / compose).exists():
+                # Try `docker compose` (v2 plugin) first; fall back recorded as comment
+                return "docker compose up"
+        return "docker compose up"
     return ""
 
 # ── Port allocator ────────────────────────────────────────────────────────────
@@ -319,20 +328,35 @@ def launch_app(app_id: str):
     install_path = Path(d["install_path"])
     cmd = d.get("launch_command","")
     if not cmd: raise HTTPException(400, "No launch command")
-    port = find_free_port()
+    stack = d.get("stack","")
+    is_docker = stack == "docker"
     env = os.environ.copy()
-    env.update({"PORT":str(port),"GRADIO_SERVER_PORT":str(port),"STREAMLIT_SERVER_PORT":str(port)})
     env_file = install_path / ".env"
     if env_file.exists():
         for line in env_file.read_text().splitlines():
             if "=" in line and not line.startswith("#"):
                 k, v = line.split("=",1); env[k.strip()] = v.strip()
+    # Docker manages its own ports; other stacks get a free port injected
+    if is_docker:
+        port = None
+    else:
+        port = find_free_port()
+        env.update({"PORT":str(port),"GRADIO_SERVER_PORT":str(port),"STREAMLIT_SERVER_PORT":str(port)})
     out = open(APPS_DIR / app_id / "stdout.log","w")
     err = open(APPS_DIR / app_id / "stderr.log","w")
-    proc = subprocess.Popen(cmd.split(), cwd=str(install_path), env=env, stdout=out, stderr=err)
+    # Use shell=True for docker compose so "docker compose up" isn't split incorrectly
+    if is_docker:
+        # Try `docker compose` (plugin); fall back to `docker-compose` (standalone)
+        docker_cmd = cmd if shutil.which("docker") else cmd.replace("docker compose","docker-compose")
+        proc = subprocess.Popen(docker_cmd, shell=True, cwd=str(install_path), env=env, stdout=out, stderr=err)
+    else:
+        proc = subprocess.Popen(cmd.split(), cwd=str(install_path), env=env, stdout=out, stderr=err)
     PROCESSES[app_id] = proc
     update_app_state(app_id, status="running", port=port, pid=proc.pid)
-    return {"port":port,"url":f"http://localhost:{port}","pid":proc.pid}
+    result = {"pid": proc.pid}
+    if port:
+        result.update({"port": port, "url": f"http://localhost:{port}"})
+    return result
 
 @app.post("/apps/{app_id}/stop")
 def stop_app(app_id: str):

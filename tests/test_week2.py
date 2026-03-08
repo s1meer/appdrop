@@ -70,10 +70,10 @@ class TestStackDetection:
         (tmp_path / "package.json").write_text('{"name":"app"}')
         assert detect_stack(tmp_path) == Stack.NODE
 
-    def test_docker_takes_priority(self, tmp_path):
+    def test_python_takes_priority_over_docker(self, tmp_path):
         (tmp_path / "Dockerfile").write_text("FROM python:3.11\n")
         (tmp_path / "requirements.txt").write_text("fastapi\n")
-        assert detect_stack(tmp_path) == Stack.DOCKER
+        assert detect_stack(tmp_path) == Stack.PYTHON
 
     def test_unknown_empty_dir(self, tmp_path):
         assert detect_stack(tmp_path) == Stack.UNKNOWN

@@ -29,11 +29,11 @@ class TestStackDetection:
         (tmp_path / "package.json").write_text('{"name": "app", "scripts": {"start": "node index.js"}}')
         assert detect_stack(tmp_path) == Stack.NODE
 
-    def test_detects_docker_first_even_with_python(self, tmp_path):
-        """Docker takes priority when both Dockerfile and requirements.txt exist."""
+    def test_python_takes_priority_over_docker(self, tmp_path):
+        """Python takes priority over docker when both Dockerfile and requirements.txt exist."""
         (tmp_path / "Dockerfile").write_text("FROM python:3.11\n")
         (tmp_path / "requirements.txt").write_text("fastapi\n")
-        assert detect_stack(tmp_path) == Stack.DOCKER
+        assert detect_stack(tmp_path) == Stack.PYTHON
 
     def test_unknown_stack_for_empty_dir(self, tmp_path):
         assert detect_stack(tmp_path) == Stack.UNKNOWN
