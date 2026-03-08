@@ -1,0 +1,19 @@
+{
+  "id": "automatic1111",
+  "name": "Stable Diffusion WebUI",
+  "description": "Most popular Stable Diffusion interface by AUTOMATIC1111",
+  "github_url": "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
+  "stack": "python",
+  "tags": [
+    "image-generation",
+    "stable-diffusion",
+    "ai"
+  ],
+  "default_port": 7860,
+  "stars_approx": 38000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/AUTOMATIC1111/stable-diffusion-webui",
+  "clone_url": "https://github.com/AUTOMATIC1111/stable-diffusion-webui.git"
+}

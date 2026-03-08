@@ -1,0 +1,19 @@
+{
+  "id": "lobe-chat",
+  "name": "Lobe Chat",
+  "description": "Modern ChatGPT/Claude UI with plugins and agents",
+  "github_url": "https://github.com/lobehub/lobe-chat",
+  "stack": "node",
+  "tags": [
+    "chat",
+    "llm",
+    "ui"
+  ],
+  "default_port": 3210,
+  "stars_approx": 38000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/lobehub/lobe-chat",
+  "clone_url": "https://github.com/lobehub/lobe-chat.git"
+}

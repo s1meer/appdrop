@@ -1,0 +1,19 @@
+{
+  "id": "text-gen-webui",
+  "name": "Text Generation WebUI",
+  "description": "Interface for running local LLMs \u2014 llama, mistral, phi",
+  "github_url": "https://github.com/oobabooga/text-generation-webui",
+  "stack": "python",
+  "tags": [
+    "llm",
+    "chat",
+    "ai"
+  ],
+  "default_port": 7860,
+  "stars_approx": 18000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/oobabooga/text-generation-webui",
+  "clone_url": "https://github.com/oobabooga/text-generation-webui.git"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "flowise",
+  "name": "Flowise",
+  "description": "Drag-drop UI for building LLM pipelines, no code",
+  "github_url": "https://github.com/FlowiseAI/Flowise",
+  "stack": "node",
+  "tags": [
+    "llm",
+    "nocode",
+    "automation"
+  ],
+  "default_port": 3000,
+  "stars_approx": 6200,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/FlowiseAI/Flowise",
+  "clone_url": "https://github.com/FlowiseAI/Flowise.git"
+}

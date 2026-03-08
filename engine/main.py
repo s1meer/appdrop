@@ -362,3 +362,162 @@ def delete_app(app_id: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8742, log_level="warning")
+
+# ════════════════════════════════════════════════════════════════════════════════
+# WEEK 4 — App Store Registry + 1-Click Update
+# ════════════════════════════════════════════════════════════════════════════════
+
+REGISTRY_DIR = Path(__file__).parent.parent / "registry" / "apps"
+REGISTRY_INDEX = Path(__file__).parent.parent / "registry" / "index.json"
+
+@app.get("/registry")
+def get_registry(tag: Optional[str] = None, stack: Optional[str] = None, q: Optional[str] = None):
+    """Browse the App Store — filter by tag, stack, or search query."""
+    apps = []
+    for f in sorted(REGISTRY_DIR.glob("*.json")):
+        try:
+            a = json.loads(f.read_text())
+            apps.append(a)
+        except Exception:
+            continue
+
+    # Filter
+    if tag:
+        apps = [a for a in apps if tag.lower() in [t.lower() for t in a.get("tags", [])]]
+    if stack:
+        apps = [a for a in apps if a.get("stack","").lower() == stack.lower()]
+    if q:
+        q = q.lower()
+        apps = [a for a in apps if q in a.get("name","").lower() or q in a.get("description","").lower()]
+
+    # Merge with installed state
+    state = load_state()
+    installed_urls = {v["github_url"]: v["id"] for v in state["apps"].values()}
+    for a in apps:
+        a["installed"] = a.get("github_url","") in installed_urls
+        if a["installed"]:
+            a["installed_id"] = installed_urls[a["github_url"]]
+
+    return {"total": len(apps), "apps": apps}
+
+@app.get("/registry/{registry_id}")
+def get_registry_app(registry_id: str):
+    """Get a single app from the registry."""
+    path = REGISTRY_DIR / f"{registry_id}.json"
+    if not path.exists():
+        raise HTTPException(404, f"Registry app '{registry_id}' not found")
+    a = json.loads(path.read_text())
+    state = load_state()
+    installed_urls = {v["github_url"]: v["id"] for v in state["apps"].values()}
+    a["installed"] = a.get("github_url","") in installed_urls
+    return a
+
+@app.post("/registry/submit")
+def submit_app(body: dict):
+    """Submit a new app to the registry (validates URL + stack before accepting)."""
+    url = body.get("github_url","")
+    parsed = parse_github_url(url)
+    if not parsed["valid"]:
+        raise HTTPException(400, "Invalid GitHub URL")
+    app_id = parsed["repo"].lower().replace("_","-").replace(".","-")
+    existing = REGISTRY_DIR / f"{app_id}.json"
+    if existing.exists():
+        raise HTTPException(409, f"App '{app_id}' already exists in registry")
+    submission = {
+        "id": app_id,
+        "name": body.get("name", parsed["repo"]),
+        "description": body.get("description", ""),
+        "github_url": f"https://github.com/{parsed['owner']}/{parsed['repo']}",
+        "clone_url": parsed["clone_url"],
+        "stack": body.get("stack", "unknown"),
+        "tags": body.get("tags", []),
+        "default_port": body.get("default_port", 8080),
+        "stars_approx": 0,
+        "verified": False,
+        "added_by": body.get("submitted_by", "community"),
+        "min_ram_gb": body.get("min_ram_gb", 4),
+        "thumbnail": f"https://opengraph.githubassets.com/1/{parsed['owner']}/{parsed['repo']}",
+        "submitted_at": time.time(),
+        "status": "pending_review",
+    }
+    # Save as pending (not in main registry until reviewed)
+    pending_dir = REGISTRY_DIR.parent / "pending"
+    pending_dir.mkdir(exist_ok=True)
+    (pending_dir / f"{app_id}.json").write_text(json.dumps(submission, indent=2))
+    return {"submitted": True, "app_id": app_id, "status": "pending_review",
+            "message": "Submission received! Will be reviewed before appearing in the store."}
+
+@app.post("/apps/{app_id}/update")
+async def update_app(app_id: str, background_tasks: BackgroundTasks):
+    """1-click update — git pull + reinstall dependencies."""
+    state = load_state()
+    if app_id not in state["apps"]:
+        raise HTTPException(404, "App not found")
+    d = state["apps"][app_id]
+    if d["status"] == "running":
+        raise HTTPException(400, "Stop the app before updating")
+    install_path = Path(d["install_path"])
+    if not install_path.exists():
+        raise HTTPException(400, "App files not found — reinstall the app")
+    update_app_state(app_id, status="updating", install_stage="cloning",
+                     install_pct=10, install_label="Pulling latest changes...")
+    background_tasks.add_task(_run_update, app_id, install_path, d)
+    return {"app_id": app_id, "status": "updating"}
+
+def _run_update(app_id: str, install_path: Path, app_data: dict):
+    write_log(app_id, "=== UPDATE STARTED ===")
+    try:
+        # Step 1: git pull
+        write_log(app_id, "git pull...")
+        r = subprocess.run(["git", "-C", str(install_path), "pull", "--rebase"],
+                          capture_output=True, timeout=120)
+        if r.returncode != 0:
+            raise Exception(f"git pull failed: {r.stderr.decode()[:300]}")
+        write_log(app_id, "✓ git pull done")
+        update_app_state(app_id, install_pct=50, install_label="Updating dependencies...")
+
+        # Step 2: reinstall deps
+        stack = Stack(app_data.get("stack", "unknown"))
+        if stack == Stack.PYTHON:
+            pip = install_path / ".venv" / "bin" / "pip"
+            req = install_path / "requirements.txt"
+            if pip.exists() and req.exists():
+                subprocess.run([str(pip), "install", "-r", str(req), "-q"],
+                              capture_output=True, timeout=300, check=True)
+                write_log(app_id, "✓ pip update done")
+        elif stack == Stack.NODE:
+            subprocess.run(["npm", "install", "--prefix", str(install_path), "--silent"],
+                          capture_output=True, timeout=300, check=True)
+            write_log(app_id, "✓ npm update done")
+
+        update_app_state(app_id, status="ready", install_pct=100,
+                        install_stage="complete", install_label="Update complete",
+                        updated_at=time.time())
+        write_log(app_id, "=== UPDATE COMPLETE ===")
+
+    except Exception as e:
+        update_app_state(app_id, status="error", install_stage="failed",
+                        install_pct=0, error_message=str(e)[:500])
+        write_log(app_id, f"UPDATE ERROR: {e}")
+
+@app.get("/apps/{app_id}/update-check")
+def check_for_update(app_id: str):
+    """Check if a git update is available without pulling."""
+    state = load_state()
+    if app_id not in state["apps"]:
+        raise HTTPException(404, "App not found")
+    install_path = Path(state["apps"][app_id]["install_path"])
+    if not install_path.exists():
+        return {"update_available": False, "reason": "app files missing"}
+    try:
+        subprocess.run(["git","-C",str(install_path),"fetch","--dry-run"],
+                      capture_output=True, timeout=15)
+        result = subprocess.run(["git","-C",str(install_path),"status","-uno"],
+                               capture_output=True, timeout=10)
+        behind = b"behind" in result.stdout
+        return {"update_available": behind,
+                "current_commit": subprocess.run(
+                    ["git","-C",str(install_path),"rev-parse","--short","HEAD"],
+                    capture_output=True).stdout.decode().strip()}
+    except Exception as e:
+        return {"update_available": False, "reason": str(e)}

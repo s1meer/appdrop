@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "total": 10,
+  "apps": [
+    {
+      "id": "comfyui",
+      "name": "ComfyUI",
+      "stack": "python",
+      "tags": [
+        "image-generation",
+        "stable-diffusion",
+        "ai"
+      ],
+      "stars_approx": 45000,
+      "description": "Stable Diffusion web UI with node-based workflow editor"
+    },
+    {
+      "id": "automatic1111",
+      "name": "Stable Diffusion WebUI",
+      "stack": "python",
+      "tags": [
+        "image-generation",
+        "stable-diffusion",
+        "ai"
+      ],
+      "stars_approx": 38000,
+      "description": "Most popular Stable Diffusion interface by AUTOMATIC1111"
+    },
+    {
+      "id": "open-webui",
+      "name": "Open WebUI",
+      "stack": "node",
+      "tags": [
+        "llm",
+        "chat",
+        "ollama",
+        "ai"
+      ],
+      "stars_approx": 12000,
+      "description": "ChatGPT-like interface for Ollama local LLMs"
+    },
+    {
+      "id": "whisper-webui",
+      "name": "Whisper WebUI",
+      "stack": "python",
+      "tags": [
+        "transcription",
+        "audio",
+        "ai"
+      ],
+      "stars_approx": 3200,
+      "description": "Transcribe audio and video using OpenAI Whisper"
+    },
+    {
+      "id": "text-gen-webui",
+      "name": "Text Generation WebUI",
+      "stack": "python",
+      "tags": [
+        "llm",
+        "chat",
+        "ai"
+      ],
+      "stars_approx": 18000,
+      "description": "Interface for running local LLMs \u2014 llama, mistral, phi"
+    },
+    {
+      "id": "invokeai",
+      "name": "InvokeAI",
+      "stack": "python",
+      "tags": [
+        "image-generation",
+        "stable-diffusion",
+        "ai"
+      ],
+      "stars_approx": 8500,
+      "description": "Professional Stable Diffusion creative toolkit"
+    },
+    {
+      "id": "lobe-chat",
+      "name": "Lobe Chat",
+      "stack": "node",
+      "tags": [
+        "chat",
+        "llm",
+        "ui"
+      ],
+      "stars_approx": 38000,
+      "description": "Modern ChatGPT/Claude UI with plugins and agents"
+    },
+    {
+      "id": "flowise",
+      "name": "Flowise",
+      "stack": "node",
+      "tags": [
+        "llm",
+        "nocode",
+        "automation"
+      ],
+      "stars_approx": 6200,
+      "description": "Drag-drop UI for building LLM pipelines, no code"
+    },
+    {
+      "id": "langflow",
+      "name": "Langflow",
+      "stack": "python",
+      "tags": [
+        "llm",
+        "langchain",
+        "nocode"
+      ],
+      "stars_approx": 12000,
+      "description": "Visual editor for LangChain and LlamaIndex pipelines"
+    },
+    {
+      "id": "localai",
+      "name": "LocalAI",
+      "stack": "docker",
+      "tags": [
+        "llm",
+        "api",
+        "openai-compatible"
+      ],
+      "stars_approx": 14000,
+      "description": "OpenAI-compatible REST API running 100% locally"
+    }
+  ]
+}

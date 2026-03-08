@@ -1,0 +1,20 @@
+{
+  "id": "open-webui",
+  "name": "Open WebUI",
+  "description": "ChatGPT-like interface for Ollama local LLMs",
+  "github_url": "https://github.com/open-webui/open-webui",
+  "stack": "node",
+  "tags": [
+    "llm",
+    "chat",
+    "ollama",
+    "ai"
+  ],
+  "default_port": 3000,
+  "stars_approx": 12000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/open-webui/open-webui",
+  "clone_url": "https://github.com/open-webui/open-webui.git"
+}

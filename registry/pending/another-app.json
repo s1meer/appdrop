@@ -1,0 +1,17 @@
+{
+  "id": "another-app",
+  "name": "Another App",
+  "description": "",
+  "github_url": "https://github.com/testuser/another-app",
+  "clone_url": "https://github.com/testuser/another-app.git",
+  "stack": "node",
+  "tags": [],
+  "default_port": 8080,
+  "stars_approx": 0,
+  "verified": false,
+  "added_by": "community",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/testuser/another-app",
+  "submitted_at": 1772956824.0768075,
+  "status": "pending_review"
+}

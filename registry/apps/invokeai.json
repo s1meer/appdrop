@@ -1,0 +1,19 @@
+{
+  "id": "invokeai",
+  "name": "InvokeAI",
+  "description": "Professional Stable Diffusion creative toolkit",
+  "github_url": "https://github.com/invoke-ai/InvokeAI",
+  "stack": "python",
+  "tags": [
+    "image-generation",
+    "stable-diffusion",
+    "ai"
+  ],
+  "default_port": 9090,
+  "stars_approx": 8500,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/invoke-ai/InvokeAI",
+  "clone_url": "https://github.com/invoke-ai/InvokeAI.git"
+}

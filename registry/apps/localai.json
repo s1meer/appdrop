@@ -1,0 +1,19 @@
+{
+  "id": "localai",
+  "name": "LocalAI",
+  "description": "OpenAI-compatible REST API running 100% locally",
+  "github_url": "https://github.com/mudler/LocalAI",
+  "stack": "docker",
+  "tags": [
+    "llm",
+    "api",
+    "openai-compatible"
+  ],
+  "default_port": 8080,
+  "stars_approx": 14000,
+  "verified": true,
+  "added_by": "appdrop-team",
+  "min_ram_gb": 4,
+  "thumbnail": "https://opengraph.githubassets.com/1/mudler/LocalAI",
+  "clone_url": "https://github.com/mudler/LocalAI.git"
+}
