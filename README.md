@@ -4,7 +4,7 @@
 
 AppDrop is an open-source desktop + web launcher. Paste any GitHub URL → auto-detect the stack → install deps → launch. Works for Python, Node.js, and Docker projects.
 
-![AppDrop](https://img.shields.io/badge/version-0.1.0-blue) ![License](https://img.shields.io/badge/license-Apache%202.0-green) ![Tests](https://img.shields.io/badge/tests-passing-brightgreen) ![Platform](https://img.shields.io/badge/platform-Mac%20%7C%20Windows-lightgrey)
+![AppDrop](https://img.shields.io/badge/version-0.5.0-blue) ![License](https://img.shields.io/badge/license-Apache%202.0-green) ![Tests](https://img.shields.io/badge/tests-passing-brightgreen) ![Platform](https://img.shields.io/badge/platform-Mac%20%7C%20Windows-lightgrey)
 
 ---
 
@@ -78,7 +78,28 @@ appdrop/
 - [x] **Week 3** — LLM README parser, env wizard, WebSocket, conda, 113 tests
 - [x] **Week 4** — App Store, community registry, 1-click update, 181 tests
 - [x] **Week 5** — Full UI live, Tauri desktop shell, Next.js web, 23/23 live tests
-- [ ] **Week 6** — Signed builds & GitHub Releases (`.dmg` / `.exe`), Windows CI
+- [x] **Week 6** — Code signing infra, self-signed Windows MSI, macOS signing stubs
+
+---
+
+## 🔐 Releasing
+
+Push a `vX.Y.Z` tag to trigger the `build-and-release` CI matrix (macOS + Windows).
+
+Windows builds are automatically signed with a self-signed cert (no setup needed).
+
+To activate **macOS notarisation**, add these six GitHub Secrets to the repo:
+
+| Secret | Description |
+|---|---|
+| `APPLE_CERTIFICATE` | Base64-encoded `.p12` Developer ID cert |
+| `APPLE_CERTIFICATE_PASSWORD` | Password for the `.p12` |
+| `APPLE_SIGNING_IDENTITY` | e.g. `Developer ID Application: Your Name (TEAMID)` |
+| `APPLE_ID` | Apple ID email used for notarisation |
+| `APPLE_PASSWORD` | App-specific password from appleid.apple.com |
+| `APPLE_TEAM_ID` | 10-character team ID from developer.apple.com |
+
+Until these secrets are set, macOS builds skip signing and ship as unsigned DMGs.
 
 ---
 
