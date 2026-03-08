@@ -148,9 +148,13 @@ def find_launch_command(repo_path: Path, stack: Stack) -> str:
 # ── Port allocator ────────────────────────────────────────────────────────────
 def find_free_port(start=7800, end=7900) -> int:
     for port in range(start, end):
-        with socket.socket() as s:
-            if s.connect_ex(("127.0.0.1", port)) != 0:
-                return port
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)
+            try:
+                s.bind(("127.0.0.1", port))
+                return port  # bind succeeded = port is free
+            except OSError:
+                continue     # bind failed = port is in use
     raise RuntimeError("No free ports in range")
 
 # ── Process health ────────────────────────────────────────────────────────────
