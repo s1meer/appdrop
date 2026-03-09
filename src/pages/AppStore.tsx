@@ -7,9 +7,9 @@ const TAG_COLORS: Record<string,string> = { ai:"#7C4DFF", "stable-diffusion":"#F
   llm:"#4F8EF7", chat:"#2ECC71", nocode:"#F39C12", transcription:"#00BCD4",
   automation:"#FF9800", api:"#9C27B0", "image-generation":"#E91E63" }
 
-interface CardProps { app: RegistryApp; theme:"dark"|"light"; onInstall:(a:RegistryApp)=>void }
+interface CardProps { app: RegistryApp; theme:"dark"|"light"; onInstall:(a:RegistryApp)=>void; onSelect:(a:RegistryApp)=>void }
 
-function AppCard({ app, theme, onInstall }: CardProps) {
+function AppCard({ app, theme, onInstall, onSelect }: CardProps) {
   const bg = theme==="dark" ? "#141720" : "#FFFFFF"
   const border = theme==="dark" ? "#1E2235" : "#D8DCF0"
   const text = theme==="dark" ? "#E8EAF0" : "#1A1D2E"
@@ -18,6 +18,7 @@ function AppCard({ app, theme, onInstall }: CardProps) {
   return (
     <div style={{background:bg,border:`1px solid ${app.installed?"#4F8EF7":border}`,
       borderRadius:12,padding:20,cursor:"pointer",transition:"all 0.15s"}}
+      onClick={()=>onSelect(app)}
       onMouseEnter={e=>{e.currentTarget.style.borderColor="#4F8EF7";e.currentTarget.style.transform="translateY(-2px)"}}
       onMouseLeave={e=>{e.currentTarget.style.borderColor=app.installed?"#4F8EF7":border;e.currentTarget.style.transform=""}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
@@ -31,7 +32,7 @@ function AppCard({ app, theme, onInstall }: CardProps) {
             </div>
           </div>
         </div>
-        <button onClick={()=>onInstall(app)} disabled={app.installed}
+        <button onClick={e=>{e.stopPropagation();onInstall(app)}} disabled={app.installed}
           style={{background:app.installed?"none":"#4F8EF7",
             border:app.installed?`1px solid ${border}`:"none",
             borderRadius:7,padding:"6px 12px",color:app.installed?sub:"#fff",
@@ -54,9 +55,9 @@ function AppCard({ app, theme, onInstall }: CardProps) {
   )
 }
 
-interface Props { theme:"dark"|"light"; onInstallUrl:(url:string,name:string)=>void }
+interface Props { theme:"dark"|"light"; onInstallUrl:(url:string,name:string)=>void; onSelectApp:(a:RegistryApp)=>void }
 
-export default function AppStore({ theme, onInstallUrl }: Props) {
+export default function AppStore({ theme, onInstallUrl, onSelectApp }: Props) {
   const [search, setSearch] = useState("")
   const [stackFilter, setStackFilter] = useState("")
   const [tagFilter, setTagFilter] = useState("")
@@ -155,7 +156,8 @@ export default function AppStore({ theme, onInstallUrl }: Props) {
       <div style={{display:"grid",gap:14,gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))"}}>
         {apps.map(a=>(
           <AppCard key={a.id} app={a} theme={theme}
-            onInstall={a=>onInstallUrl(a.github_url, a.name)}/>
+            onInstall={a=>onInstallUrl(a.github_url, a.name)}
+            onSelect={onSelectApp}/>
         ))}
       </div>
     </div>

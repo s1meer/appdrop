@@ -1,6 +1,11 @@
 import { useState } from "react"
 import { api } from "../lib/api"
 
+function extractGithubUrl(text: string): string | null {
+  const m = text.match(/https?:\/\/github\.com\/[\w.-]+\/[\w.-]+/)
+  return m ? m[0] : null
+}
+
 interface Props {
   onClose: ()=>void; onInstalled: (id:string)=>void; theme:"dark"|"light"
 }
@@ -11,6 +16,7 @@ export default function InstallModal({ onClose, onInstalled, theme }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [step, setStep] = useState<"url"|"confirm"|"installing">("url")
+  const [dragging, setDragging] = useState(false)
 
   const bg = theme==="dark" ? "#141720" : "#FFFFFF"
   const border = theme==="dark" ? "#1E2235" : "#D8DCF0"
@@ -52,6 +58,23 @@ export default function InstallModal({ onClose, onInstalled, theme }: Props) {
         </div>
 
         {step==="url" && <>
+          <div
+            onDragOver={e=>{e.preventDefault();setDragging(true)}}
+            onDragLeave={()=>setDragging(false)}
+            onDrop={e=>{
+              e.preventDefault(); setDragging(false)
+              const text = e.dataTransfer.getData("text")
+              const found = extractGithubUrl(text)
+              if (found) setUrl(found)
+            }}
+            style={{
+              border:`2px dashed ${dragging?"#4F8EF7":border}`,
+              borderRadius:8,padding:"10px 14px",marginBottom:8,
+              background:dragging?"#4F8EF710":input,transition:"all 0.15s",
+              textAlign:"center",color:dragging?"#4F8EF7":sub,fontSize:12
+            }}>
+            {dragging ? "Drop GitHub URL here" : "Drag a GitHub link here, or type below"}
+          </div>
           <input value={url} onChange={e=>setUrl(e.target.value)}
             onKeyDown={e=>e.key==="Enter"&&validate()}
             placeholder="https://github.com/owner/repo"
